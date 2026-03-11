@@ -74,14 +74,14 @@ jobs:
           echo "$PROVISIONING_PROFILE" | base64 --decode \
             > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
 
-      - name: Build & Archive
+           - name: Build & Archive
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
-          # プロビジョニングプロファイル名を取得
-          PROFILE_NAME=$(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision | \
-            /usr/libexec/PlistBuddy -c 'Print :Name' /dev/stdin)
-          echo "Using profile: $PROFILE_NAME"
+          # プロビジョニングプロファイルUUIDを取得
+          PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin <<< \
+            $(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision))
+          echo "Using profile UUID: $PROFILE_UUID"
 
           xcodebuild \
             -workspace ios/App/App.xcworkspace \
@@ -91,7 +91,7 @@ jobs:
             -archivePath "$RUNNER_TEMP/App.xcarchive" \
             DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
             CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_NAME" \
+            PROVISIONING_PROFILE="$PROFILE_UUID" \
             SUPPORTS_MACCATALYST=NO \
             archive
 
