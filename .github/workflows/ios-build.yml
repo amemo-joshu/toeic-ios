@@ -82,6 +82,8 @@ jobs:
           PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin <<< \
             $(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision))
           echo "Using profile UUID: $PROFILE_UUID"
+          echo "PROFILE_UUID=$PROFILE_UUID" >> $GITHUB_ENV
+
 
           xcodebuild \
             -project ios/App/App.xcodeproj \
@@ -97,14 +99,11 @@ jobs:
             SUPPORTS_MACCATALYST=NO \
             archive
 
-
-
       - name: Export IPA (App Store)
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
-          PROFILE_UUID=$(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision | \
-            /usr/libexec/PlistBuddy -c 'Print :UUID' /dev/stdin)
+          echo "Using saved profile UUID: $PROFILE_UUID"
 
           cat > /tmp/ExportOptions.plist << EOF
           <?xml version="1.0" encoding="UTF-8"?>
