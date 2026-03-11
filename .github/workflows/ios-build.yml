@@ -99,10 +99,14 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bdbcc0a (Fix: use xcodeproj instead of xcworkspace)
           # プロビジョニングプロファイルUUIDを取得
           PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin <<< \
             $(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision))
           echo "Using profile UUID: $PROFILE_UUID"
+<<<<<<< HEAD
           echo "PROFILE_UUID=$PROFILE_UUID" >> $GITHUB_ENV
 
 
@@ -117,6 +121,11 @@ jobs:
           xcodebuild \
             -workspace ios/App/App.xcworkspace \
 >>>>>>> f378c75 (feat: iPad support, improved GitHub Actions workflow, Japanese locale)
+=======
+
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+>>>>>>> bdbcc0a (Fix: use xcodeproj instead of xcworkspace)
             -scheme App \
             -configuration Release \
             -destination "generic/platform=iOS" \
@@ -124,12 +133,16 @@ jobs:
             DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
             CODE_SIGN_STYLE=Manual \
 <<<<<<< HEAD
+<<<<<<< HEAD
             CODE_SIGN_IDENTITY="Apple Distribution" \
             CODE_SIGN_IDENTITY="Apple Distribution" \
             PROVISIONING_PROFILE="$PROFILE_UUID" \
 =======
             PROVISIONING_PROFILE_SPECIFIER="$PROFILE_NAME" \
 >>>>>>> f378c75 (feat: iPad support, improved GitHub Actions workflow, Japanese locale)
+=======
+            PROVISIONING_PROFILE="$PROFILE_UUID" \
+>>>>>>> bdbcc0a (Fix: use xcodeproj instead of xcworkspace)
             SUPPORTS_MACCATALYST=NO \
             archive
 
