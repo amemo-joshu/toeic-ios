@@ -74,7 +74,7 @@ jobs:
           echo "$PROVISIONING_PROFILE" | base64 --decode \
             > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
 
-           - name: Build & Archive
+      - name: Build & Archive
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
@@ -94,6 +94,7 @@ jobs:
             PROVISIONING_PROFILE="$PROFILE_UUID" \
             SUPPORTS_MACCATALYST=NO \
             archive
+
 
       - name: Export IPA (App Store)
         env:
