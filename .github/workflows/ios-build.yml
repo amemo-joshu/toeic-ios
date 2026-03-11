@@ -24,10 +24,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
 <<<<<<< HEAD
+<<<<<<< HEAD
           node-version: '22'
 =======
           node-version: '20'
 >>>>>>> f378c75 (feat: iPad support, improved GitHub Actions workflow, Japanese locale)
+=======
+          node-version: '22'
+>>>>>>> da47086 (Fix iOS build: Use Node 22 and remove CocoaPods (using SPM))
           cache: 'npm'
 
       - name: Install dependencies
@@ -53,12 +57,15 @@ jobs:
       
 =======
 
+<<<<<<< HEAD
       - name: Install CocoaPods
         run: |
           cd ios/App
           pod install --repo-update
 
 >>>>>>> f378c75 (feat: iPad support, improved GitHub Actions workflow, Japanese locale)
+=======
+>>>>>>> da47086 (Fix iOS build: Use Node 22 and remove CocoaPods (using SPM))
       - name: Setup Keychain & Certificate
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
