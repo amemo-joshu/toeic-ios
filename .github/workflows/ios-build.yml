@@ -84,7 +84,7 @@ jobs:
           echo "Using profile UUID: $PROFILE_UUID"
 
           xcodebuild \
-            -workspace ios/App/App.xcworkspace \
+            -project ios/App/App.xcodeproj \
             -scheme App \
             -configuration Release \
             -destination "generic/platform=iOS" \
