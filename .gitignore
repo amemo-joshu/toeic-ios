@@ -4,3 +4,15 @@ ios/App/App.xcworkspace/xcuserdata/
 *.xcuserstate
 .DS_Store
 dist/
+
+# env files - NEVER commit secrets
+.env
+.env.*
+!.env.example
+
+# Certificates and keys
+*.p12
+*.p8
+*.key
+*.mobileprovision
+google-service-account.json

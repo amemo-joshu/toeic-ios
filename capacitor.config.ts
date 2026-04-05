@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'TOEIC 700+ MASTER',
   webDir: 'dist',
   server: {
-    url: 'https://toeicplus.com',
+    url: 'https://www.amenomori-app.com',
     cleartext: false,
   },
   ios: {
