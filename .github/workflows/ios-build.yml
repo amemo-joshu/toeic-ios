@@ -23,7 +23,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
+<<<<<<< HEAD
           node-version: '22'
+=======
+          node-version: '20'
+>>>>>>> f378c75 (feat: iPad support, improved GitHub Actions workflow, Japanese locale)
           cache: 'npm'
 
       - name: Install dependencies
@@ -45,7 +49,16 @@ jobs:
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
+<<<<<<< HEAD
       
+=======
+
+      - name: Install CocoaPods
+        run: |
+          cd ios/App
+          pod install --repo-update
+
+>>>>>>> f378c75 (feat: iPad support, improved GitHub Actions workflow, Japanese locale)
       - name: Setup Keychain & Certificate
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
@@ -78,6 +91,7 @@ jobs:
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
+<<<<<<< HEAD
           # プロビジョニングプロファイルUUIDを取得
           PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin <<< \
             $(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision))
@@ -87,15 +101,28 @@ jobs:
 
           xcodebuild \
             -project ios/App/App.xcodeproj \
+=======
+          # プロビジョニングプロファイル名を取得
+          PROFILE_NAME=$(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision | \
+            /usr/libexec/PlistBuddy -c 'Print :Name' /dev/stdin)
+          echo "Using profile: $PROFILE_NAME"
+
+          xcodebuild \
+            -workspace ios/App/App.xcworkspace \
+>>>>>>> f378c75 (feat: iPad support, improved GitHub Actions workflow, Japanese locale)
             -scheme App \
             -configuration Release \
             -destination "generic/platform=iOS" \
             -archivePath "$RUNNER_TEMP/App.xcarchive" \
             DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
             CODE_SIGN_STYLE=Manual \
+<<<<<<< HEAD
             CODE_SIGN_IDENTITY="Apple Distribution" \
             CODE_SIGN_IDENTITY="Apple Distribution" \
             PROVISIONING_PROFILE="$PROFILE_UUID" \
+=======
+            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_NAME" \
+>>>>>>> f378c75 (feat: iPad support, improved GitHub Actions workflow, Japanese locale)
             SUPPORTS_MACCATALYST=NO \
             archive
 
@@ -103,7 +130,12 @@ jobs:
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
+<<<<<<< HEAD
           echo "Using saved profile UUID: $PROFILE_UUID"
+=======
+          PROFILE_UUID=$(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision | \
+            /usr/libexec/PlistBuddy -c 'Print :UUID' /dev/stdin)
+>>>>>>> f378c75 (feat: iPad support, improved GitHub Actions workflow, Japanese locale)
 
           cat > /tmp/ExportOptions.plist << EOF
           <?xml version="1.0" encoding="UTF-8"?>
