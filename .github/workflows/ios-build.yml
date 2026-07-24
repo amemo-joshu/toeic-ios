@@ -89,8 +89,8 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           # プロビジョニングプロファイルUUIDを取得
-          PROFILE_UUID=$(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision | \
-            /usr/libexec/PlistBuddy -c 'Print :UUID' /dev/stdin)
+          # （PlistBuddyは/dev/stdinのパイプを読めないため、前ステップで展開済みの/tmp/profile.plistを使う）
+          PROFILE_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' /tmp/profile.plist)
           echo "Using profile UUID: $PROFILE_UUID"
           echo "PROFILE_UUID=$PROFILE_UUID" >> $GITHUB_ENV
 
