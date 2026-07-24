@@ -65,6 +65,25 @@ jobs:
           echo "$PROVISIONING_PROFILE" | base64 --decode \
             > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
 
+          # シークレット不備の早期検出（空/破損だと後段のxcodebuildが不親切なエラーで死ぬ）
+          SIZE=$(wc -c < ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision)
+          if [ "$SIZE" -lt 100 ]; then
+            echo "::error::APPLE_PROVISIONING_PROFILE シークレットが空か不正です（decode後 ${SIZE} bytes）。"
+            echo "::error::Apple Developer ポータルで .mobileprovision を再発行し、'base64 -i profile.mobileprovision' の結果をSecretsに再設定してください。"
+            exit 1
+          fi
+          if ! security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision > /tmp/profile.plist; then
+            echo "::error::プロビジョニングプロファイルを解析できません。base64化の際に改行や余分な文字が混入していないか確認してください。"
+            exit 1
+          fi
+          # 有効期限チェック
+          EXPIRY=$(/usr/libexec/PlistBuddy -c 'Print :ExpirationDate' /tmp/profile.plist)
+          echo "Provisioning profile expires: $EXPIRY"
+          if [ "$(date -j -f '%a %b %d %H:%M:%S %Z %Y' "$EXPIRY" +%s 2>/dev/null || echo 0)" -lt "$(date +%s)" ]; then
+            echo "::error::プロビジョニングプロファイルの有効期限が切れています（$EXPIRY）。再発行してください。"
+            exit 1
+          fi
+
       - name: Build & Archive
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
