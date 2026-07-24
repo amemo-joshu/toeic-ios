@@ -12,6 +12,9 @@ const config: CapacitorConfig = {
     contentInset: 'automatic',
     allowsLinkPreview: false,
     scrollEnabled: true,
+    // Web側がiOSアプリを識別するためのUAマーカー
+    // （Stripe購入UIの非表示・TOEICセクションへの誘導に使用）
+    appendUserAgent: 'AmenomoriIOSApp',
   },
   plugins: {
     SplashScreen: {

@@ -1,6 +1,9 @@
 # TOEIC 700+ MASTER — iOS アプリ
 
-`https://toeicplus.com` を Capacitor でラップしたネイティブiOSアプリです。
+`https://www.amenomori-app.com` を Capacitor でラップしたネイティブiOSアプリです。
+
+> ⚠️ 旧ドメイン `toeicplus.com` は失効済み。2026-07-24以前のビルドは失効ドメインを指しており起動しません。必ず再ビルドして配布し直すこと。
+> UAに `AmenomoriIOSApp` を付与しており、Web側はこれを検出してStripe購入UIを非表示（App Store 3.1.1対応）・TOEICセクションへの誘導を行います。
 
 ---
 
@@ -8,7 +11,7 @@
 
 ```
 toeic-ios/
-├── capacitor.config.ts   # Capacitor設定（URLはtoeicplus.com）
+├── capacitor.config.ts   # Capacitor設定（URLはwww.amenomori-app.com）
 ├── ios/App/              # Xcodeプロジェクト
 ├── assets/               # アイコン・スプラッシュ原画像
 └── .github/workflows/    # GitHub Actions自動ビルド
