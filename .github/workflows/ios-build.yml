@@ -94,6 +94,11 @@ jobs:
           echo "Using profile UUID: $PROFILE_UUID"
           echo "PROFILE_UUID=$PROFILE_UUID" >> $GITHUB_ENV
 
+          # バージョン: プロジェクト内は1.0/1のまま放置されているため、CIで毎回一意な値を注入する
+          # （TestFlight既存の最大ビルド番号20を確実に超えるよう run_number + 100 を使用）
+          BUILD_NUMBER=$((100 + ${{ github.run_number }}))
+          echo "MARKETING_VERSION=1.6.0 / CURRENT_PROJECT_VERSION=$BUILD_NUMBER"
+
           xcodebuild \
             -project ios/App/App.xcodeproj \
             -scheme App \
@@ -104,6 +109,8 @@ jobs:
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Apple Distribution" \
             PROVISIONING_PROFILE="$PROFILE_UUID" \
+            MARKETING_VERSION=1.6.0 \
+            CURRENT_PROJECT_VERSION=$BUILD_NUMBER \
             SUPPORTS_MACCATALYST=NO \
             archive
 
@@ -159,12 +166,22 @@ jobs:
           echo "$APPLE_API_KEY_CONTENT" | base64 --decode \
             > ~/.appstoreconnect/private_keys/AuthKey_${APPLE_API_KEY_ID}.p8
 
+          # altoolはERRORを出しても終了コード0を返すことがあるため、出力を検査して確実に失敗させる
+          set -o pipefail
           xcrun altool --upload-app \
             --type ios \
             --file "$(ls $RUNNER_TEMP/ipa/*.ipa)" \
             --apiKey "$APPLE_API_KEY_ID" \
             --apiIssuer "$APPLE_API_KEY_ISSUER" \
-            --verbose
+            --verbose 2>&1 | tee /tmp/altool.log
+
+          if grep -q "ERROR:" /tmp/altool.log; then
+            echo "::error::TestFlightアップロードに失敗しました。上のaltool ERROR行を確認してください。"
+            if grep -q "agreement is missing or has expired" /tmp/altool.log; then
+              echo "::error::Apple Developer Programの契約が未同意/期限切れです。App Store Connect →「ビジネス」→ 契約、または developer.apple.com のAgreementsで同意してください（アカウント保有者のみ操作可能）。"
+            fi
+            exit 1
+          fi
 
       - name: Notify Success
         if: success()
